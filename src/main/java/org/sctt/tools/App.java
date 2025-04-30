@@ -12,6 +12,9 @@ import java.util.concurrent.Callable;
         description = "Turns a bunch of java files into proper project")
 class App implements Callable<Integer> {
 
+    /**
+     * Source root folder.
+     */
     @Parameters(description = "Base folder of the files (source root).")
     private File file;
 
@@ -31,7 +34,7 @@ class App implements Callable<Integer> {
 
     }
 
-    public static void main(String... args) {
+    public static void main(final String... args) {
         int exitCode = new CommandLine(new App()).execute(args);
         System.exit(exitCode);
     }
