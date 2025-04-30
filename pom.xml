@@ -52,6 +52,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.6.0</version>
+                <configuration>
+                    <!-- Set path to your custom checkstyle rules -->
+<!--                    <configLocation>checkstyle.xml</configLocation>-->
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <logViolationsToConsole>true</logViolationsToConsole>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>validate</phase>
