@@ -5,7 +5,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 @Command(name = "jpfy", mixinStandardHelpOptions = true, version = "jpfy 0.1",
@@ -22,16 +21,6 @@ class App implements Callable<Integer> {
     public Integer call() {
         System.out.println("Succeed in doing nothing for " + this.file);
         return 0;
-    }
-
-    @Command()
-    public void list() {
-        if (this.file.isDirectory()) {
-            System.out.println(Arrays.toString(this.file.list()));
-        } else {
-            System.out.println("File: " + this.file.getAbsolutePath());
-        }
-
     }
 
     public static void main(final String... args) {
