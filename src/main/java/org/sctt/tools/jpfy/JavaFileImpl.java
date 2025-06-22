@@ -7,6 +7,9 @@ import java.nio.file.Path;
  */
 public final class JavaFileImpl implements JavaFile {
 
+    /**
+     * Source path.
+     */
     private final Path source;
 
     /**

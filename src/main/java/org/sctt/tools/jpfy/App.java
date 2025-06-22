@@ -32,11 +32,13 @@ public final class App implements Callable<Integer> {
             paths.filter(Files::isRegularFile)
                     .filter(f -> f.getFileName().toString().endsWith(".java"))
                     .forEach(p ->
-                            move.put(p, new JavaFileImpl(p).pkg().asPath())
+                        move.put(p, new JavaFileImpl(p).pkg().asPath())
                     );
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        move.entrySet().forEach(System.out::println);
 
         return 0;
     }
