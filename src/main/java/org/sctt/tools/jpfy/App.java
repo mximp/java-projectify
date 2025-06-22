@@ -1,12 +1,16 @@
-package org.sctt.tools;
+package org.sctt.tools.jpfy;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import java.io.File;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 /**
  * Entry point class for the app.
@@ -23,13 +27,16 @@ public final class App implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        if (!file.isDirectory()) {
-            throw new IllegalArgumentException("Not a source folder");
+        final Map<Path, Path> move = new HashMap<>();
+        try (Stream<Path> paths = Files.walk(this.file.toPath())) {
+            paths.filter(Files::isRegularFile)
+                    .filter(f -> f.getFileName().toString().endsWith(".java"))
+                    .forEach(p ->
+                            move.put(p, new JavaFileImpl(p).pkg().asPath())
+                    );
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        Arrays.stream(this.file.list((f, s) -> s.endsWith(".java"))).forEach(
-                System.out::println
-        );
 
         return 0;
     }
