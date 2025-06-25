@@ -4,7 +4,6 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -23,16 +22,20 @@ public final class App implements Callable<Integer> {
      * Source root folder.
      */
     @Parameters(description = "Base folder of the files (source root).")
-    private File file;
+    private Path src;
 
     @Override
     public Integer call() {
         final Map<Path, Path> move = new HashMap<>();
-        try (Stream<Path> paths = Files.walk(this.file.toPath())) {
+        try (Stream<Path> paths = Files.walk(this.src)) {
             paths.filter(Files::isRegularFile)
                     .filter(f -> f.getFileName().toString().endsWith(".java"))
                     .forEach(p ->
-                        move.put(p, new JavaFileImpl(p).pkg().asPath())
+                        move.put(
+                            p,
+                            this.src.resolve(new JavaFileImpl(p).pkg().asPath())
+                                    .resolve(p.getFileName().toString())
+                        )
                     );
         } catch (Exception e) {
             e.printStackTrace();
