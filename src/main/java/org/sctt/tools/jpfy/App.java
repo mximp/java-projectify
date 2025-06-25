@@ -29,14 +29,14 @@ public final class App implements Callable<Integer> {
         final Map<Path, Path> move = new HashMap<>();
         try (Stream<Path> paths = Files.walk(this.src)) {
             paths.filter(Files::isRegularFile)
-                    .filter(f -> f.getFileName().toString().endsWith(".java"))
-                    .forEach(p ->
-                        move.put(
-                            p,
-                            this.src.resolve(new JavaFileImpl(p).pkg().asPath())
-                                    .resolve(p.getFileName().toString())
-                        )
-                    );
+                .filter(f -> f.getFileName().toString().endsWith(".java"))
+                .forEach(f ->
+                    move.put(
+                        f,
+                        this.src.resolve(new JavaFileImpl(f).pkg().asPath())
+                            .resolve(f.getFileName())
+                    )
+                );
         } catch (Exception e) {
             e.printStackTrace();
         }
