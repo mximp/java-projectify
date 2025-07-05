@@ -4,7 +4,7 @@
 
     <groupId>org.sctt.tools</groupId>
     <artifactId>java-projectify</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -14,7 +14,7 @@
 
     <scm>
         <developerConnection>scm:git:git@github.com:mximp/java-projectify.git</developerConnection>
-      <tag>java-projectify-0.0.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <dependencies>
