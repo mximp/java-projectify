@@ -42,7 +42,6 @@ public final class App implements Callable<Integer> {
         }
 
         move.entrySet().forEach(System.out::println);
-
         return 0;
     }
 
