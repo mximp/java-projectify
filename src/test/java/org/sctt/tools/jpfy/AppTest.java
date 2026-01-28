@@ -145,8 +145,8 @@ class AppTest {
         }
 
         @Test
-        @DisplayName("Should skip non-Java files")
-        void shouldSkipNonJavaFiles(@TempDir Path tempDir) throws IOException {
+        @DisplayName("Should skip non-Java files by default")
+        void shouldSkipNonJavaFilesByDefault(@TempDir Path tempDir) throws IOException {
             // given
             Files.writeString(tempDir.resolve("Test.java"), "package test;");
             Files.writeString(tempDir.resolve("Readme.txt"), "Just a readme");
@@ -160,7 +160,56 @@ class AppTest {
 
             // then
             String captured = getCapturedOutput(output);
-            // Should only contain Test.java references
+            assertTrue(captured.contains("Test.java"), "Should process Java file");
+            assertFalse(captured.contains("Readme.txt"), "Should not process txt file by default");
+            assertFalse(captured.contains("Script.kts"), "Should not process kts file by default");
+            restoreSystemOut();
+        }
+
+        @Test
+        @DisplayName("Should copy non-Java files with --copy-resources flag")
+        void shouldCopyNonJavaFilesWithFlag(@TempDir Path tempDir) throws IOException {
+            // given
+            Files.writeString(tempDir.resolve("Test.java"), "package test;");
+            Files.writeString(tempDir.resolve("Readme.txt"), "Just a readme");
+            Files.writeString(tempDir.resolve("Test.properties"), "key=value");
+
+            String[] args = {"--copy-resources", tempDir.toString()};
+            ByteArrayOutputStream output = captureSystemOut();
+
+            // when
+            new CommandLine(new App()).execute(args);
+            String captured = getCapturedOutput(output);
+
+            // then
+            assertTrue(captured.contains("Test.java"), "Should process Java file");
+            assertTrue(captured.contains("Readme.txt"), "Should process txt file with --copy-resources");
+            assertTrue(captured.contains("Test.properties"), "Should process properties file with --copy-resources");
+            restoreSystemOut();
+        }
+
+        @Test
+        @DisplayName("Should place resource files in correct package directory")
+        void shouldPlaceResourceFilesInCorrectPackage(@TempDir Path tempDir) throws IOException {
+            // given
+            Files.writeString(tempDir.resolve("service/UserService.java"), "package service;\
+import model.User;\
+\
+public class UserService {};");
+            Files.writeString(tempDir.resolve("service/UserService.properties"), "timeout=30");
+            Files.writeString(tempDir.resolve("service/logback.xml"), "<configuration></configuration>");
+
+            String[] args = {"--copy-resources", tempDir.toString()};
+            ByteArrayOutputStream output = captureSystemOut();
+
+            // when
+            new CommandLine(new App()).execute(args);
+            String captured = getCapturedOutput(output);
+
+            // then
+            assertTrue(captured.contains("service/UserService.java"), "Should process Java file");
+            assertTrue(captured.contains("service/UserService.properties"), "Should process properties file in service package");
+            assertTrue(captured.contains("service/logback.xml"), "Should process xml file in service package");
             restoreSystemOut();
         }
     }
